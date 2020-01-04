@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<style>
+    body {
+        background-color: grey;
+        padding: 0;
+        margin: 0;
+        text-align: center;
+    }
+
+    #flex {
+        display:none;
+        width: 318px;
+        margin: 0  auto;
+        margin-top:10%;
+        margin-bottom: 5%;
+        text-align: center;
+        
+    }
+
+    .box {
+        border: 3px solid black;
+        width: 100px;
+        height: 100px;
+        background-color: green;
+        display: table-cell;
+        line-height: 100px;
+        font-size:200%;
+    }
+
+    .box:hover{
+
+        background-color: white;
+
+    }
+
+    #row1 {
+        display: flex;
+        flex-direction: row;
+    }
+
+    #row2 {
+        display: flex;
+        flex-direction: row;
+    }
+
+    #row3 {
+        display: flex;
+        flex-direction: row;
+    }
+
+    #first-line{
+
+    margin-top:15%;       
+
+    }
+
+    #refresh-button{
+        background-color: yellowgreen;
+        border:5px solid grey;
+        border-radius:30%;
+        block-size: 80px;
+        width:150px;
+        font-size: 150%;
+        text-decoration: none;
+        display:none;
+        margin-top:20px;
+       
+    }
+
+    input::-moz-focus-inner{
+        border:0;
+    }
+
+  
+
+</style>
+
+<body>
+    <h1>TIC TAC TOE GAME!!!</h1>
+    <div id="flex">
+        <div id=row1>
+
+            <div class="box 0 0" id=1></div>
+            <div class="box 0 1" id=2></div>
+            <div class="box 0 2" id=3></div>
+
+        </div>
+
+        <div id=row2>
+
+            <div class="box 1 0" id=4></div>
+            <div class="box 1 1" id=5></div>
+            <div class="box 1 2" id=6></div>
+
+        </div>
+
+        <div id=row3>
+
+            <div class="box 2 0" id=7></div>
+            <div class="box 2 1" id=8></div>
+            <div class="box 2 2" id=9></div>
+
+        </div>
+
+    </div>
+
+
+    <button id="first-line"><h3>Hit me!!!To play a CHUTIYAPA game.</h3></button>
+  
+    <div id="result" style="margin-top:15% ;color:white; font-size: 250%;"></div>
+
+    <input id=refresh-button type="button" value="Exit" onclick="window.location.reload();">
+
+    <script>
+
+        
+        
+
+        $("#first-line").click(function () {
+
+            $("#flex").css("display", "block");
+            $("#first-line").css("display", "none");
+            
+        });
+
+        var chance = "X", count = 0;
+        $(".box").click(function () {  // main logic
+            
+            if ($(this).html() == "") {
+                count++;
+
+                if (chance == "X") {
+                    $(this).html("X");
+                    chance = "O";
+                }
+                else {
+                    $(this).html("O");
+                    chance = "X";
+                }
+            }
+
+
+
+            if (check(this)) {
+
+                if (chance == "O") {
+                    $("#result").html(" Congratulation! Player 1 won the match.");
+                } else {
+                    $("#result").html(" Congratulation! Player 2 won the match.");
+                }
+
+                $("#flex").css("display", "none");
+                $("#refresh-button").toggle();
+            }
+
+                        
+            else if(count==9){
+                $("#flex").css("display", "none");
+
+                $("#result").html("Match Draw. Fuck off!!!");
+                $("#refresh-button").toggle();
+            }
+        });
+
+        function checkRow(a){
+            
+            var i;
+            var row = $(a).attr("class").split(" ")[1];
+            var col = $(a).attr("class").split(" ")[2];
+            for(i=1;i<=3;i++){
+                var j=3*row+i;
+                if($(a).html()!=$("#"+j).html()){
+                    return 0;
+                }
+            }
+            return 1;
+
+        }
+
+        function checkColumn(a){ 
+            
+            var i;
+            var row = $(a).attr("class").split(" ")[1];
+            var col = $(a).attr("class").split(" ")[2];
+            var j=++col;
+            col--;
+           
+            for(i=1;i<=3;i++){
+                if($(a).html()!=$("#"+j).html()){
+                    return 0;
+
+                }
+                j=j+3;
+            }
+            return 1;
+            
+            }
+
+            function checkLeftDiag(a){
+                var i;
+                var row = $(a).attr("class").split(" ")[1];
+                var col = $(a).attr("class").split(" ")[2];
+                var j=1;
+                for(i=1;i<=3;i++){
+                    if($(a).html()!=$("#"+j).html()){ 
+                        return 0;
+                    } 
+                    j+=4;
+                }
+                return 1;
+            }
+
+            function checkRightDiag(a){
+                var i;
+                var row = $(a).attr("class").split(" ")[1];
+                var col = $(a).attr("class").split(" ")[2];
+                var j=3;
+                for(i=1;i<=3;i++){
+
+                    if($(a).html()!=$("#"+j).html()) return 0; 
+                    j+=2;
+                }
+                return 1;  
+            }
+
+        function checkDiagonal(a){
+
+            var row = $(a).attr("class").split(" ")[1];
+            var col = $(a).attr("class").split(" ")[2];
+            if(row!=col && row!=2-col)
+                return 0;
+            if(row==col && row==1){
+                return checkLeftDiag(a) || checkRightDiag(a);
+            }else if(row==col){
+                return checkLeftDiag(a);
+            } else return checkRightDiag(a);   
+        
+
+        }
+
+        function check(a) {
+
+          
+           if(checkRow(a) || checkColumn(a) || checkDiagonal(a)){
+               return 1;
+           }return 0;
+
+        }
+           
+
+    </script>
+
+</body>
+
+</html>
